@@ -164,6 +164,10 @@ def tokenize(code):
         nonlocal index, grouped, sub_index
         result.append(['number', grouped[index][1]])
         read_unknown()
+    def read_whitespace():
+        nonlocal index, grouped, sub_index
+        result.append(['whitespace', grouped[index][1]])
+        read_unknown()
     def read_unknown():
         nonlocal index, grouped, sub_index
         index += 1
@@ -175,7 +179,7 @@ def tokenize(code):
         elif(char_type == '0'):
             read_number()
         elif(char_type == ' '):
-            read_unknown()
+            read_whitespace()
         elif(char_type in ['A','a']):
             read_word()
         
