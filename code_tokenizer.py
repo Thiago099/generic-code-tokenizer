@@ -195,7 +195,7 @@ equivalent = {
     "'": "'",
 }
 
-def parse(code):
+def group(code):
     tokens = tokenize(code)
     index = 0
     stack = []
