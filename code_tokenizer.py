@@ -272,3 +272,58 @@ def parase_groups(code):
         index_stack[-1] += 1
 
     return result[0]
+
+
+def parase_groups(code):
+    code = group(code)
+    result = [[]]
+    cursor = [code]
+    index_stack = [0]
+    spaces = 0
+    current = [result[-1]]
+    while(1):
+        if(index_stack[-1] >= len(cursor[-1])):
+            index_stack.pop()
+            cursor.pop()
+            if(len(current) > 1):
+                current.pop()
+            if(len(index_stack) == 0):
+                break
+            index_stack[-1] += 1
+            continue
+        type, value = cursor[-1][index_stack[-1]]
+        if(type in ('word','number','symbol')):
+            current[-1].append([type,value])
+        if(type in ('{','[','(', '"', '\'')):
+            index_stack.append(0)
+            cursor.append(value)
+            if(type == '['):
+                if(len(current[-1]) == 0 or current[-1][-1][0] != 'word'):
+                    current.append(['array_define'])
+                    current[-2].append(current[-1])
+                else:
+                    current[-1][-1].append('array_call')
+                    current.append(current[-1][-1])
+            elif(type == '{'):
+                if(len(current[-1]) == 0):
+                    current.append(['code_block'])
+                    current[-2].append(current[-1])
+                elif(current[-1][-1][0] == 'word' or current[-1][-1][0] == 'attached_group'): # problematic
+                    current[-1][-1].append('attached_block')
+                    command = 'attached_block'
+                    current.append(current[-1][-1])
+                else:
+                    current.append(['dictionary_define'])
+                    current[-2].append(current[-1])
+            elif(type == '('):
+                if(len(current[-1]) == 0):
+                    current.append(['numeric_group'])
+                elif(current[-1][-1][0] == 'word'):
+                    current[-1][-1].append('attached_group')
+                    current.append(current[-1][-1])
+                else:
+                    current.append(['numeric_group'])
+                    current[-2].append(current[-1])
+            continue
+        index_stack[-1] += 1
+    return result[0]
