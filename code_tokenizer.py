@@ -279,7 +279,6 @@ def parase_groups(code):
     result = [[]]
     cursor = [code]
     index_stack = [0]
-    spaces = 0
     current = [result[-1]]
     while(1):
         if(index_stack[-1] >= len(cursor[-1])):
