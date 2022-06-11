@@ -220,61 +220,7 @@ def group(code):
         index += 1
     return data_stack[0][1]
 
-def parase_groups(code):
-    code = group(code)
-    result = [[]]
-    cursor = [code]
-    index_stack = [0]
-    context = ['root']
-
-    while(1):
-        if(index_stack[-1] >= len(cursor[-1])):
-            index_stack.pop()
-            cursor.pop()
-            if(len(index_stack) == 0):
-                break
-            previus = result.pop()
-            result[-1].append([previus[0],previus[1:]])
-            index_stack[-1] += 1
-            continue
-        type, value = cursor[-1][index_stack[-1]]
-        if(type in ('word','number','symbol','whitespace')):
-            result[-1].append([type,value])
-        if(type in ('{','[','(', '"', '\'')):
-            # result[-1] = ['function'] + result[-1] 
-            context.append(type)
-            index_stack.append(0)
-            cursor.append(value)
-            if(type == '['):
-                if(len(result[-1]) == 0 or result[-1][-1][0] != 'word'):
-                    result.append(['array_define'])
-                else:
-                    result.append(['array_call'])
-                continue
-            if(type == '{'):
-                if(len(result[-1]) == 0):
-                    result.append(['code_block'])
-                elif(result[-1][-1][0] == 'word' or result[-1][-1][0] == 'attached_group'):
-                    result.append(['attached_block'])
-                else:
-                    result.append(['dictionary_define'])
-                continue
-            if(type == '('):
-                if(len(result[-1]) == 0):
-                    result.append(['numeric_group'])
-                elif(result[-1][-1][0] == 'word'):
-                    result.append(['attached_group'])
-                else:
-                    result.append(['numeric_group'])
-                continue
-            result.append([type])
-            continue
-        index_stack[-1] += 1
-
-    return result[0]
-
-
-def parase_groups(code):
+def parse_groups(code):
     code = group(code)
     result = [[]]
     cursor = [code]
@@ -298,31 +244,37 @@ def parase_groups(code):
             cursor.append(value)
             if(type == '['):
                 if(len(current[-1]) == 0 or current[-1][-1][0] != 'word'):
-                    current.append(['array_define'])
-                    current[-2].append(current[-1])
+                    node = ['array_define',[]]
+                    current[-1].append(node)
+                    current.append(node[-1])
                 else:
-                    current[-1][-1].append('array_call')
-                    current.append(current[-1][-1])
+                    node = ['array_call',[]]
+                    current[-1][-1].append(node)
+                    current.append(node[-1])
             elif(type == '{'):
                 if(len(current[-1]) == 0):
-                    current.append(['code_block'])
-                    current[-2].append(current[-1])
+                    node = ['code_block',[]]
+                    current[-1].append(node)
+                    current.append(node[-1])
                 elif(current[-1][-1][0] == 'word' or current[-1][-1][0] == 'attached_group'): # problematic
-                    current[-1][-1].append('attached_block')
-                    command = 'attached_block'
-                    current.append(current[-1][-1])
+                    node = ['attached_block',[]]
+                    current[-1][-1].append(node)
+                    current.append(node[-1])
                 else:
-                    current.append(['dictionary_define'])
-                    current[-2].append(current[-1])
+                    node = ['dictionary_define',[]]
+                    current[-1].append(node)
+                    current.append(node[-1])
             elif(type == '('):
                 if(len(current[-1]) == 0):
                     current.append(['numeric_group'])
                 elif(current[-1][-1][0] == 'word'):
-                    current[-1][-1].append('attached_group')
-                    current.append(current[-1][-1])
+                    node = ['attached_group',[]]
+                    current[-1][-1].append(node)
+                    current.append(node[-1])
                 else:
-                    current.append(['numeric_group'])
-                    current[-2].append(current[-1])
+                    node = ['numeric_group',[]]
+                    current[-1].append(node)
+                    current.append(node[-1])
             continue
         index_stack[-1] += 1
     return result[0]
