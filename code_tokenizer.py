@@ -238,7 +238,7 @@ def parase_groups(code):
             index_stack[-1] += 1
             continue
         type, value = cursor[-1][index_stack[-1]]
-        if(type in ('word','number','symbol')):
+        if(type in ('word','number','symbol','whitespace')):
             result[-1].append([type,value])
         if(type in ('{','[','(', '"', '\'')):
             # result[-1] = ['function'] + result[-1] 
