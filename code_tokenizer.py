@@ -203,8 +203,7 @@ def group(code):
     while index < len(tokens):
         token, value = tokens[index]
         if(token != 'symbol'):
-            if token != 'whitespace': # or "'" in stack or '"' in stack:
-                data_stack[-1][1].append([token,value])
+            data_stack[-1][1].append([token,value])
         else:
             if(len(stack) > 0 and value == stack[-1]):
                 stack.pop()
@@ -213,10 +212,63 @@ def group(code):
                 stack.append(equivalent[value])
                 data_stack.append([value,[]])
             else:
-                if(len(stack) > 0 and '"' in stack or '\'' in stack and index + 1 < len(tokens) and value == '\\'):
+                if(len(stack) > 0 and ('"' in stack or '\'' in stack) and index + 1 < len(tokens) and value == '\\'):
                     data_stack[-1][1].append(['symbol','\\' + tokens[index+1][1]])
                     index += 1
                 else:
                     data_stack[-1][1].append([token,value])
         index += 1
     return data_stack[0][1]
+
+def parase_groups(code):
+    code = group(code)
+    result = [[]]
+    cursor = [code]
+    index_stack = [0]
+    context = ['root']
+
+    while(1):
+        if(index_stack[-1] >= len(cursor[-1])):
+            index_stack.pop()
+            cursor.pop()
+            if(len(index_stack) == 0):
+                break
+            previus = result.pop()
+            result[-1].append([previus[0],previus[1:]])
+            index_stack[-1] += 1
+            continue
+        type, value = cursor[-1][index_stack[-1]]
+        if(type in ('word','number','symbol')):
+            result[-1].append([type,value])
+        if(type in ('{','[','(', '"', '\'')):
+            # result[-1] = ['function'] + result[-1] 
+            context.append(type)
+            index_stack.append(0)
+            cursor.append(value)
+            if(type == '['):
+                if(len(result[-1]) == 0 or result[-1][-1][0] != 'word'):
+                    result.append(['array_define'])
+                else:
+                    result.append(['array_call'])
+                continue
+            if(type == '{'):
+                if(len(result[-1]) == 0):
+                    result.append(['code_block'])
+                elif(result[-1][-1][0] == 'word' or result[-1][-1][0] == 'attached_group'):
+                    result.append(['attached_block'])
+                else:
+                    result.append(['dictionary_define'])
+                continue
+            if(type == '('):
+                if(len(result[-1]) == 0):
+                    result.append(['numeric_group'])
+                elif(result[-1][-1][0] == 'word'):
+                    result.append(['attached_group'])
+                else:
+                    result.append(['numeric_group'])
+                continue
+            result.append([type])
+            continue
+        index_stack[-1] += 1
+
+    return result[0]
