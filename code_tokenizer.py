@@ -76,7 +76,7 @@ def tokenize(code):
             if(char_type == ' '):
                 result.append(['word', current_item])
                 current_item = ''
-                read_unknown()
+                read_whitespace()
                 return
         result.append(['word', current_item])
     def read_symbol():
@@ -186,3 +186,37 @@ def tokenize(code):
         index += 1
     read_unknown()
     return result
+
+equivalent = {
+    '[': ']',
+    '{': '}',
+    '(': ')',
+    '"': '"',
+    "'": "'",
+}
+
+def parse(code):
+    tokens = tokenize(code)
+    index = 0
+    stack = []
+    data_stack = [['root',[]]]
+    while index < len(tokens):
+        token, value = tokens[index]
+        if(token != 'symbol'):
+            if token != 'whitespace': # or "'" in stack or '"' in stack:
+                data_stack[-1][1].append([token,value])
+        else:
+            if(len(stack) > 0 and value == stack[-1]):
+                stack.pop()
+                data_stack[-2][1].append(data_stack.pop())
+            elif value in ['"', '\"','[','(','{']:
+                stack.append(equivalent[value])
+                data_stack.append([value,[]])
+            else:
+                if(len(stack) > 0 and '"' in stack or '\'' in stack and index + 1 < len(tokens) and value == '\\'):
+                    data_stack[-1][1].append(['symbol','\\' + tokens[index+1][1]])
+                    index += 1
+                else:
+                    data_stack[-1][1].append([token,value])
+        index += 1
+    return data_stack[0][1]
