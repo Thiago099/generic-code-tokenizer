@@ -85,71 +85,71 @@ def tokenize(code):
         while sub_index < len(current_segment):
             if(sub_index+1 < len(current_segment)):
                 dual = current_segment[sub_index:sub_index+2]
-                if(current_segment[dual] == '=='):
+                if(dual == '=='):
                     result.append(['symbol', '=='])
                     sub_index += 2
                     continue
-                if(current_segment[dual] == '<='):
+                if(dual == '<='):
                     result.append(['symbol', '<='])
                     sub_index += 2
                     continue
-                if(current_segment[dual] == '>='):
+                if(dual == '>='):
                     result.append(['symbol', '>='])
                     sub_index += 2
                     continue
-                if(current_segment[dual] == '!='):
+                if(dual == '!='):
                     result.append(['symbol', '!='])
                     sub_index += 2
                     continue
-                if(current_segment[dual] == '&&'):
+                if(dual == '&&'):
                     result.append(['symbol', '&&'])
                     sub_index += 2
                     continue
-                if(current_segment[dual] == '||'):
+                if(dual == '||'):
                     result.append(['symbol', '||'])
                     sub_index += 2
                     continue
-                if(current_segment[dual] == '<>'):
+                if(dual == '<>'):
                     result.append(['symbol', '<>'])
                     sub_index += 2
                     continue
-                if(current_segment[dual] == '<<'):
+                if(dual == '<<'):
                     result.append(['symbol', '<<'])
                     sub_index += 2
                     continue
-                if(current_segment[dual] == '>>'):
+                if(dual == '>>'):
                     result.append(['symbol', '>>'])
                     sub_index += 2
                     continue
-                if(current_segment[dual] == '++'):
+                if(dual == '++'):
                     result.append(['symbol', '++'])
                     sub_index += 2
                     continue
-                if(current_segment[dual] == '--'):
+                if(dual == '--'):
                     result.append(['symbol', '--'])
                     sub_index += 2
                     continue
-                if(current_segment[dual] == '+='):
+                if(dual == '+='):
                     result.append(['symbol', '+='])
                     sub_index += 2
                     continue
-                if(current_segment[dual] == '-='):
+                if(dual == '-='):
                     result.append(['symbol', '-='])
                     sub_index += 2
                     continue
-                if(current_segment[dual] == '*='):
+                if(dual == '*='):
                     result.append(['symbol', '*='])
                     sub_index += 2
                     continue
-                if(current_segment[dual] == '/='):
+                if(dual == '/='):
                     result.append(['symbol', '/='])
                     sub_index += 2
                     continue
-                if(current_segment[dual] == '->'):
+                if(dual == '->'):
                     result.append(['symbol', '->'])
                     sub_index += 2
                     continue
-                if(current_segment[dual] == '=>'):
+                if(dual == '=>'):
                     result.append(['symbol', '=>'])
                     sub_index += 2
                     continue
