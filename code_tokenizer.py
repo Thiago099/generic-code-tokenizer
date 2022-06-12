@@ -305,11 +305,7 @@ def split_code(code):
             else:
                 cursor.append(i)
             previous = current
-        if(len(cursor) > 0):
-            if(len(cursor) > 1):
-                result.append(cursor)
-            else:
-                result.append(cursor[0])
+        result.append(cursor if len(cursor) > 1 else cursor[0])
         return result if len(result) > 1 else result[0]
     def scan(value):
         for i in range(len(value)):
