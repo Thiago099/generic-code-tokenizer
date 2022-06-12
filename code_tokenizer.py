@@ -278,3 +278,42 @@ def parse_groups(code):
             continue
         index_stack[-1] += 1
     return result[0]
+
+
+def split_code(code):
+    code = parse_groups(code)
+    def split(code):
+        cursor = []
+        result = [cursor]
+        previous = False
+        current = False
+        for i in code:
+            current = False
+            if(type(i[0]) == str and i[0] != 'symbol'):
+                current = True
+                if(previous):
+                    cursor = []
+                    result.append(cursor)
+            else:
+                current = False
+
+            if(i[1] in [',',';']):
+                cursor = []
+                result.append(cursor)
+                current = False
+            else:
+                cursor.append(i)
+            previous = current
+        return result
+    def scan(value):
+        for i in range(len(value)):
+            if(type(value[i]) == list):
+                scan(value[i])
+            else:
+                if(value[i] in ['array_define','array_call','code_block','attached_group','attached_block','dictionary_define','numeric_group','attached_group']):
+                    value[i+1] = split(value[i+1])
+    
+    for i in code:
+        scan(i)
+    result = split(code)
+    return result
