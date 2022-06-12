@@ -329,7 +329,7 @@ def dot_layer(code):
                 if(value[i][1] == '.'):
                     scan(value[i+1])
                     if(value[i-1][0] == 'acess_group'):
-                        value[i-1][1] += value[i+1][1]
+                        value[i-1][1] += value[i+1]
                     else:
                         value[i-1] = ['acess_group',[value[i-1]]+[value[i+1]]]
                     value.pop(i)
