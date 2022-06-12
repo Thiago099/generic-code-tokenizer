@@ -1,3 +1,4 @@
+from operator import le
 from colors import *
 def differentiate(m):
     return ' ' if m < '!' else '#' if m < '0' else '0' if m < ':' else '#' if m < 'A' else 'A' if m < '[' else '#' if m < 'a' else 'a' if m < '{' else '#'
@@ -284,7 +285,7 @@ def split_code(code):
     code = parse_groups(code)
     def split(code):
         cursor = []
-        result = [cursor]
+        result = []
         previous = False
         current = False
         for i in code:
@@ -292,19 +293,24 @@ def split_code(code):
             if(type(i[0]) == str and i[0] != 'symbol'):
                 current = True
                 if(previous):
+                    result.append(cursor if len(cursor) > 1 else cursor[0])
                     cursor = []
-                    result.append(cursor)
             else:
                 current = False
 
             if(i[1] in [',',';']):
+                result.append(cursor if len(cursor) > 1 else cursor[0])
                 cursor = []
-                result.append(cursor)
                 current = False
             else:
                 cursor.append(i)
             previous = current
-        return result
+        if(len(cursor) > 0):
+            if(len(cursor) > 1):
+                result.append(cursor)
+            else:
+                result.append(cursor[0])
+        return result if len(result) > 1 else result[0]
     def scan(value):
         for i in range(len(value)):
             if(type(value[i]) == list):
