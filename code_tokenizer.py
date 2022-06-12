@@ -319,3 +319,97 @@ def split_code(code):
         scan(i)
     result = split(code)
     return result
+
+def dot_layer(code):
+    split = split_code(code)
+    def scan(value):
+        i = 0
+        while(i < len(value)):
+            if(type(value[i]) == list):
+                if(value[i][1] == '.'):
+                    scan(value[i+1])
+                    if(value[i-1][0] == 'acess_group'):
+                        value[i-1][1] += value[i+1][1]
+                    else:
+                        value[i-1] = ['acess_group',[value[i-1]]+[value[i+1]]]
+                    value.pop(i)
+                    value.pop(i)
+                    i -= 1
+                    continue
+                elif(value[i][1] == '='):
+                    value[i-1] = ['assignment',[value[i-1],value[i+1:]]]
+                    value[:] = value[:i]
+                    continue
+                elif(value[i][1] in ['++','--']):
+                    value[i-1] = ['increment' if value[i][1] == '++' else 'decrement' ,value[i-1]]
+                    value.pop(i)
+                    continue
+                scan(value[i])
+            i += 1
+    scan(split)
+    return split
+
+def parse_math(code):
+    priority = {
+        '+': 1,
+        '-': 1,
+        '*': 2,
+        '/': 2,
+        '>': -1,
+        '<': -1,
+        '==': -1,
+        '!=': -1,
+        '>=': -1,
+        '<=': -1,
+        '&&': -2,
+        '||': -2,
+    }
+    operations = []
+    variables = []
+    result = []
+    # create a binary tree from the operations using the priority
+    for item in code:
+        token = item[0]
+        value = item[1]
+        if(token == 'symbol'):
+            if(value in priority.keys()):
+                current_priority = priority[value]
+            else:
+                current_priority = 0
+            while(len(operations) > 0 and current_priority <= operations[-1][0]):
+                if(len(variables) > 0 and len(result) == 0):
+                    result.append(variables.pop())
+                if(len(variables) > 0):
+                    result.append(variables.pop())
+                if(len(operations) > 0):
+                    result.append(operations.pop()[1])
+            operations.append([current_priority,item])
+        else:
+            variables.append(item)
+    busy = True
+    while(busy):
+        busy = False
+        if(len(variables) > 0 and len(result) == 0):
+            result.append(variables.pop())
+            busy = True
+        if(len(variables) > 0):
+            result.append(variables.pop())
+            busy = True
+        if(len(operations) > 0):
+            result.append(operations.pop()[1])
+            busy = True
+    return result
+
+def math_layer(code):
+    dot = dot_layer(code)
+    def scan(value):
+        i = 0
+        while(i < len(value)):
+            if(type(value[i]) == list):
+                if(value[i][0]) == 'symbol':
+                    value[:] = parse_math(value)
+                    return
+                scan(value[i])
+            i += 1
+    scan(dot)
+    return dot
