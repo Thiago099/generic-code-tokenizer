@@ -276,6 +276,10 @@ def parse_groups(code):
                     node = ['numeric_group',[]]
                     current[-1].append(node)
                     current.append(node[-1])
+            elif(type == '"' or type == '\''):
+                node = ['string',[]]
+                current[-1].append(node)
+                current.append(node[-1])
             continue
         index_stack[-1] += 1
     return result[0]
@@ -326,25 +330,26 @@ def dot_layer(code):
         i = 0
         while(i < len(value)):
             if(type(value[i]) == list):
-                if(value[i][1] == '.'):
-                    scan(value[i+1])
-                    if(value[i-1][0] == 'acess_group'):
-                        value[i-1][1] += value[i+1]
-                    else:
-                        value[i-1] = ['acess_group',[value[i-1]]+[value[i+1]]]
-                    value.pop(i)
-                    value.pop(i)
-                    i -= 1
-                    continue
-                elif(value[i][1] == '='):
-                    value[i-1] = ['assignment',[value[i-1],value[i+1:]]]
-                    value[:] = value[:i]
-                    continue
-                elif(value[i][1] in ['++','--']):
-                    value[i-1] = ['increment' if value[i][1] == '++' else 'decrement' ,value[i-1]]
-                    value.pop(i)
-                    continue
-                scan(value[i])
+                if(len(value[i]) == 2):
+                    if(value[i][1] == '.'):
+                        scan(value[i+1])
+                        if(value[i-1][0] == 'acess_group'):
+                            value[i-1][1] += value[i+1]
+                        else:
+                            value[i-1] = ['acess_group',[value[i-1]]+[value[i+1]]]
+                        value.pop(i)
+                        value.pop(i)
+                        i -= 1
+                        continue
+                    elif(value[i][1] == '='):
+                        value[i-1] = ['assignment',[value[i-1],value[i+1:]]]
+                        value[:] = value[:i]
+                        continue
+                    elif(value[i][1] in ['++','--']):
+                        value[i-1] = ['increment' if value[i][1] == '++' else 'decrement' ,value[i-1]]
+                        value.pop(i)
+                        continue
+                    scan(value[i])
             i += 1
     scan(split)
     return split
