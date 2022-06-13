@@ -301,7 +301,6 @@ def split_code(code):
                     cursor = []
             else:
                 current = False
-
             if(i[1] in [',',';']):
                 result.append(cursor if len(cursor) > 1 else cursor[0])
                 cursor = []
