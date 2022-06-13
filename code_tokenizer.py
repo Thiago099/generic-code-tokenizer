@@ -349,7 +349,7 @@ def dot_layer(code):
                         value[i-1] = ['increment' if value[i][1] == '++' else 'decrement' ,value[i-1]]
                         value.pop(i)
                         continue
-                    scan(value[i])
+                scan(value[i])
             i += 1
     scan(split)
     return split
@@ -382,10 +382,16 @@ def parse_math(code):
             else:
                 current_priority = 0
             while(len(operations) > 0 and current_priority <= operations[-1][0]):
+                a = None
+                b = None
                 if(len(variables) > 0):
-                    result.append(variables.pop())
+                    a = variables.pop()
                 if(len(variables) > 0):
-                    result.append(variables.pop())
+                    b = variables.pop()
+                if(b):
+                    result.append(b)
+                if(a):
+                    result.append(a)
                 if(len(operations) > 0):
                     result.append(operations.pop()[1])
             operations.append([current_priority,item])
@@ -394,12 +400,16 @@ def parse_math(code):
     busy = True
     while(busy):
         busy = False
+        a = None
+        b = None
         if(len(variables) > 0):
-            result.append(variables.pop())
-            busy = True
+            a = variables.pop()
         if(len(variables) > 0):
-            result.append(variables.pop())
-            busy = True
+            b = variables.pop()
+        if(b):
+            result.append(b)
+        if(a):
+            result.append(a)
         if(len(operations) > 0):
             result.append(operations.pop()[1])
             busy = True
