@@ -382,7 +382,7 @@ def parse_math(code):
             else:
                 current_priority = 0
             while(len(operations) > 0 and current_priority <= operations[-1][0]):
-                if(len(variables) > 0 and len(result) == 0):
+                if(len(variables) > 0):
                     result.append(variables.pop())
                 if(len(variables) > 0):
                     result.append(variables.pop())
@@ -394,7 +394,7 @@ def parse_math(code):
     busy = True
     while(busy):
         busy = False
-        if(len(variables) > 0 and len(result) == 0):
+        if(len(variables) > 0):
             result.append(variables.pop())
             busy = True
         if(len(variables) > 0):
