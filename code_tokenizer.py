@@ -334,10 +334,10 @@ def dot_layer(code):
                 if(len(value[i]) == 2):
                     if(value[i][1] == '.'):
                         scan(value[i+1])
-                        if(value[i-1][0] == 'acess_group'):
+                        if(value[i-1][0] == 'access_group'):
                             value[i-1][1] += value[i+1]
                         else:
-                            value[i-1] = ['acess_group',[value[i-1]]+[value[i+1]]]
+                            value[i-1] = ['access_group',[value[i-1]]+[value[i+1]]]
                         value.pop(i)
                         value.pop(i)
                         i -= 1
