@@ -353,6 +353,19 @@ def dot_layer(code):
                 scan(value[i])
             i += 1
     scan(split)
+    def second_pass(value):
+        i = 0
+        while(i < len(value)):
+            if(type(value[i]) == list):
+                if(type(value[i]) == list):
+                    if(len(value[i]) == 2):
+                        if(value[i][1] == '!'):
+                            value[i+1] = ['not',value[i+1]]
+                            value.pop(i)
+                            continue
+                second_pass(value[i])
+            i += 1
+    second_pass(split)
     return split
 
 def parse_math(code):
