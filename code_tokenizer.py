@@ -324,6 +324,13 @@ def split_code(code):
         scan(i)
     result = split(code)
     return result
+assignment_type = {
+    '=': 'assign',
+    '+=': 'add_assign',
+    '-=': 'subtract_assign',
+    '*=': 'multiply_assign',
+    '/=': 'divide_assign',
+}
 
 def dot_layer(code):
     split = split_code(code)
@@ -342,8 +349,9 @@ def dot_layer(code):
                         value.pop(i)
                         i -= 1
                         continue
-                    elif(value[i][1] == '='):
-                        value[i-1] = ['assignment',[value[i-1],value[i+1:]]]
+                    elif(value[i][1] in ['=','+=','-=','*=','/=']):
+                        
+                        value[i-1] = [assignment_type[value[i][1]],[value[i-1],value[i+1:]]]
                         value[:] = value[:i]
                         continue
                     elif(value[i][1] in ['++','--']):
