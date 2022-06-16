@@ -376,7 +376,15 @@ def dot_layer(code):
             i += 1
     second_pass(split)
     return split
-
+def build_math(code):
+    variables = []
+    for item in code:
+        if(item[0] == 'symbol'):
+            a, b = (variables.pop(), variables.pop())
+            variables.append(['operation',item[1], b, a])
+        else:
+            variables.append(item)
+    return variables[0]
 def parse_math(code):
     priority = {
         '+': 1,
@@ -436,7 +444,7 @@ def parse_math(code):
         if(len(operations) > 0):
             result.append(operations.pop()[1])
             busy = True
-    return result
+    return build_math(result)
 
 def math_layer(code):
     dot = dot_layer(code)
