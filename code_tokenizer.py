@@ -339,7 +339,7 @@ def dot_layer(code):
         while(i < len(value)):
             if(type(value[i]) == list):
                 if(len(value[i]) == 2):
-                    if(value[i][1] == '.'):
+                    if(value[i][1] in ['.','->']):
                         scan(value[i+1])
                         if(value[i-1][0] == 'access_group'):
                             value[i-1][1] += value[i+1]
@@ -350,8 +350,10 @@ def dot_layer(code):
                         i -= 1
                         continue
                     elif(value[i][1] in ['=','+=','-=','*=','/=']):
-                        
-                        value[i-1] = [assignment_type[value[i][1]],[value[i-1],value[i+1:]]]
+                        mod = value[i+1:]
+                        if(len(mod) == 1):
+                            mod = mod[0]
+                        value[i-1] = [assignment_type[value[i][1]],[value[i-1],mod]]
                         value[:] = value[:i]
                         continue
                     elif(value[i][1] in ['++','--']):
