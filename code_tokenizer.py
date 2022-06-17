@@ -310,18 +310,15 @@ def split_code(code):
             else:
                 cursor.append(i)
             previous = current
-        result.append(cursor if len(cursor) > 1 else cursor[0])
-        return result if len(result) > 1 else result[0]
+        result.append(cursor if len(cursor) > 1 else cursor[0] if len(cursor) == 1 else [])
+        return result if len(result) > 1 else result[0] if len(result) == 1 else []
     def scan(value):
         for i in range(len(value)):
             if(type(value[i]) == list):
                 scan(value[i])
             else:
                 if(value[i] in ['array_define','array_call','code_block','attached_group','attached_block','dictionary_define','numeric_group','attached_group']):
-                    if(len(value) <= i + 1):
-                        print(len(value))
-                        print(i+1)
-                        value[i+1] = split(value[i+1])
+                    value[i+1] = split(value[i+1])
     
     for i in code:
         scan(i)
