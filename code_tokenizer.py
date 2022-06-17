@@ -318,7 +318,10 @@ def split_code(code):
                 scan(value[i])
             else:
                 if(value[i] in ['array_define','array_call','code_block','attached_group','attached_block','dictionary_define','numeric_group','attached_group']):
-                    value[i+1] = split(value[i+1])
+                    if(len(value) <= i + 1):
+                        print(len(value))
+                        print(i+1)
+                        value[i+1] = split(value[i+1])
     
     for i in code:
         scan(i)
@@ -381,8 +384,19 @@ def build_math(code):
     variables = []
     for item in code:
         if(item[0] == 'symbol'):
-            a, b = (variables.pop(), variables.pop())
-            variables.append(['operation',item[1], [b, a]])
+            if(len(variables) > 0):
+                a = variables.pop()
+            if(len(variables) > 0):
+                b = variables.pop()
+            if(a != None):
+                if(b != None):
+                    operations = [b, a]
+                else:
+                    operations = [a]
+            else:
+                operations = []
+            
+            variables.append(['operation',item[1],operations])
         else:
             variables.append(item)
     return variables[0]
@@ -454,7 +468,7 @@ def math_layer(code):
         i = 0
         while(i < len(value)):
             if(type(value[i]) == list):
-                if(value[i][0]) == 'symbol':
+                if(len(value[i]) > 0 and value[i][0]) == 'symbol':
                     value[:] = parse_math(value)
                     return
                 scan(value[i])
