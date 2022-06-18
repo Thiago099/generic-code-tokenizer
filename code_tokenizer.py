@@ -347,6 +347,8 @@ def dot_layer(code):
                             value[i-1] = ['access_group',[value[i-1]]+[value[i+1]]]
                         value.pop(i)
                         value.pop(i)
+                        if(len(value) == 1):
+                            value[:] = value[0]
                         i -= 1
                         continue
                     elif(value[i][1] in ['=','+=','-=','*=','/=']):
@@ -355,6 +357,8 @@ def dot_layer(code):
                             mod = mod[0]
                         value[i-1] = [assignment_type[value[i][1]],[value[i-1],mod]]
                         value[:] = value[:i]
+                        if(len(value) == 1):
+                            value[:] = value[0]
                         continue
                     elif(value[i][1] in ['++','--']):
                         value[i-1] = ['increment' if value[i][1] == '++' else 'decrement' ,value[i-1]]
