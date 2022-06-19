@@ -484,11 +484,14 @@ def parse(code):
             parsed = [parsed]
         for item in parsed:
             if item[0] == 'word' :
-                if item[1] in ['if', 'while']:
+                if item[1] in ['if', 'while','foreach']:
                     result.append([item[1],[item[2][1],read(item[3][1])]])
                     continue
                 elif item[1] == 'for':
                     result.append(['for',[[item[2][1][0],item[2][1][1],item[2][1][2]],read(item[3][1])]])
+                    continue
+                elif item[1] == 'else':
+                    result.append(['else',read(item[2][1])])
                     continue
             elif item[0] == 'assign':
                 result.append(['assign',[item[1][0][1],item[1][1]]])
