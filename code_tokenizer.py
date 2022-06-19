@@ -485,14 +485,14 @@ def parse(code):
         for item in parsed:
             if item[0] == 'word' :
                 if item[1] in ['if', 'while']:
-                    result.append([item[1],item[2][1],read(item[3][1])])
+                    result.append([item[1],[item[2][1],read(item[3][1])]])
                     continue
                 elif item[1] == 'for':
-                    result.append(['for',item[2][1][0],item[2][1][1],item[2][1][2],read(item[3][1])])
+                    result.append(['for',[[item[2][1][0],item[2][1][1],item[2][1][2]],read(item[3][1])]])
                     continue
             elif item[0] == 'assign':
                 result.append(['assign',[item[1][0][1],item[1][1]]])
                 continue
             result.append(item)
-        return result
+        return result if len(result) > 1 else result[0]
     return read(math_layer(code))
