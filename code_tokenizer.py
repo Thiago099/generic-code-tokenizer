@@ -491,7 +491,7 @@ def parse(code):
                     result.append(['else',read(item[2][1])])
                     continue
             elif item[0] == 'assign':
-                result.append(['assign',[item[1][0][1],item[1][1]]])
+                result.append(['assign',[item[1][0],item[1][1]]])
                 continue
             result.append(item)
         return result if len(result) > 1 else result[0]
