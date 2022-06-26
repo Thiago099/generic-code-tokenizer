@@ -366,7 +366,7 @@ def dot_layer(code):
                         continue
                 scan(value[i])
             i += 1
-    # scan(split)
+    scan(split)
     # def second_pass(value):
     #     i = 0
     #     while(i < len(value)):
