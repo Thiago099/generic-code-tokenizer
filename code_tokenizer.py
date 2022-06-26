@@ -366,19 +366,20 @@ def dot_layer(code):
                         continue
                 scan(value[i])
             i += 1
-    scan(split)
-    def second_pass(value):
-        i = 0
-        while(i < len(value)):
-            if(type(value[i]) == list):
-                if(len(value[i]) == 2):
-                    if(value[i][1] == '!'):
-                        value[i+1] = ['not',value[i+1]]
-                        value.pop(i)
-                        continue
-                second_pass(value[i])
-            i += 1
-    second_pass(split)
+    # scan(split)
+    # def second_pass(value):
+    #     i = 0
+    #     while(i < len(value)):
+    #         if(type(value[i]) == list):
+    #             if(len(value[i]) == 2):
+    #                 if(value[i][1] == '!'):
+    #                     value[i+1] = ['not',value[i+1]]
+    #                     value.pop(i)
+    #                     continue
+
+    #             second_pass(value[i])
+    #         i += 1
+    # second_pass(split)
     return split
 
 def build_math(code):
@@ -420,31 +421,41 @@ def parse_math(code):
     operations = []
     variables = []
     result = []
+    pervious_token = 'symbol'
+    carry = None
     # create a binary tree from the operations using the priority
     for item in code:
         token = item[0]
         value = item[1]
         if(token == 'symbol'):
-            if(value in priority.keys()):
-                current_priority = priority[value]
+            if(pervious_token == 'symbol'):
+                carry = value
             else:
-                current_priority = 0
-            while(len(operations) > 0 and current_priority <= operations[-1][0]):
-                a = None
-                b = None
-                if(len(variables) > 0):
-                    a = variables.pop()
-                if(len(variables) > 0):
-                    b = variables.pop()
-                if(b):
-                    result.append(b)
-                if(a):
-                    result.append(a)
-                if(len(operations) > 0):
-                    result.append(operations.pop()[1])
-            operations.append([current_priority,item])
+                if(value in priority.keys()):
+                    current_priority = priority[value]
+                else:
+                    current_priority = 0
+                while(len(operations) > 0 and current_priority <= operations[-1][0]):
+                    a = None
+                    b = None
+                    if(len(variables) > 0):
+                        a = variables.pop()
+                    if(len(variables) > 0):
+                        b = variables.pop()
+                    if(b):
+                        result.append(b)
+                    if(a):
+                        result.append(a)
+                    if(len(operations) > 0):
+                        result.append(operations.pop()[1])
+                operations.append([current_priority,item])
         else:
-            variables.append(item)
+            if(carry):
+                variables.append(['single_operation',carry,item])
+                carry = None
+            else:
+                variables.append(item)
+        pervious_token = token
     busy = True
     while(busy):
         busy = False
