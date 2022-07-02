@@ -496,7 +496,7 @@ def parse(code):
         for item in parsed:
             if item[0] == 'word' :
                 if item[1] in ['if', 'for', 'while','foreach']:
-                    result.append([item[1],[item[2][1],read(item[3][1])]])
+                    result.append(['instruction',item[1],[item[2][1],read(item[3][1])]])
                     continue
                 elif item[1] == 'else':
                     result.append(['else',read(item[2][1])])
