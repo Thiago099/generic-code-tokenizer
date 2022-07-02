@@ -398,7 +398,7 @@ def build_math(code):
             else:
                 operations = []
             
-            variables.append(['operation',item[1],operations])
+            variables.append(['operation',[item[1],operations]])
         else:
             variables.append(item)
     return variables[0]
